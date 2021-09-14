@@ -31,16 +31,15 @@ class Ship():
             self.x -= self.settings.ship_speed
         self.rect.x = self.x  # Обновление атрибута rect на основании self.x
 
-        if self.moving_up:
+        if self.moving_up and self.rect.top > 0:
             self.y -= self.settings.ship_speed
-        if self.moving_down:
+        if self.moving_down and self.rect.bottom < self.screen_rect.bottom:
             self.y += self.settings.ship_speed
         self.rect.y = self.y  # Обновление атрибута rect на основании self.y
 
     def blitme(self):
         """Рисует корабль в текущей позиции."""
         self.screen.blit(self.image, self.rect)  # Метод blit выводит изображеие на экран в позиции заданной self.rect
-
 
         # if self.rect.right > WIDTH:
         #     self.rect.right = WIDTH
