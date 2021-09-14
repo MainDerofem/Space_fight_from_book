@@ -21,13 +21,15 @@ class AlienInvasion():
 
         self.ship = Ship(self)
 
+        clock = pygame.time.Clock()
+        FPS = 60
     def run_game(self):
         """Запуск основного цикла игры"""
         while True:  # Отслеживание событий клавиатуры и мыши.
             self._check_events()  # При каждом проходе цикла, перерисовывается экран.
             self._update_screen()
             self.ship.update()
-
+        clock.tick(FPS)
     def _check_events(self):
         """Обрабатывает нажатия клавиш и события мыши."""
         for event in pygame.event.get():
