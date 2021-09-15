@@ -2,14 +2,13 @@ import sys
 import pygame
 from settings import Settings
 from ship import Ship
-
+from bullet import Bullet
 
 # Формат PNG использовать где много однотонных областей, где потери не допустимы (тексты). Альфа канал для прозрачного фона.
 # Формат JPEG если фотореалистичные изображения.
 # Формат bmp родной формат для pygame.
 class AlienInvasion():
     """Класс для управления ресурсами и поведением игры."""
-
     def __init__(self):
         """Инициализирует игру и создает игровые ресурсы."""
         pygame.init()
@@ -20,6 +19,8 @@ class AlienInvasion():
         pygame.display.set_caption("Alien Invasion")
 
         self.ship = Ship(self)
+        self.bullets = pygame.sprite.Group() #Воспользуемся группой для прорисовки снарядов на экране при каждом
+                                             #проходе основного цикла и обновления текущей позиции каждого снаряда.
 
         clock = pygame.time.Clock()
         FPS = 60
@@ -27,39 +28,64 @@ class AlienInvasion():
         """Запуск основного цикла игры"""
         while True:  # Отслеживание событий клавиатуры и мыши.
             self._check_events()  # При каждом проходе цикла, перерисовывается экран.
-            self._update_screen()
+            self.bullets.update() #Вызывает bullet.update() для каждого снаряда, включенного в группу bullets.
             self.ship.update()
+
+            for bullet in self.bullets.copy(): # Удаление снарядов, вышедших за край экрана.
+                if bullet.rect.bottom <= 0: #Если снаряд пересек границу, он удаляется из bullets.
+                    self.bullets.remove(bullet)
+            #print(len(self.bullets)) #Cообщает, сколько снарядов сейчас существует в игре; по выведенному значению
+                                     #можно убедиться в том, что снаряды действительно удаляются при достижении
+                                     #верхнего края экрана.
+            self._update_screen()
         clock.tick(FPS)
-    def _check_events(self):
+
+    def _check_events(self):  #Обнаруживает важные события: нажатия и отпускания клавиш.
         """Обрабатывает нажатия клавиш и события мыши."""
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                sys.exit()
-
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RIGHT:
-                    self.ship.moving_right = True
-                elif event.key == pygame.K_LEFT:
-                    self.ship.moving_left = True
-                elif event.key == pygame.K_UP:
-                        self.ship.moving_up = True
-                elif event.key == pygame.K_DOWN:
-                    self.ship.moving_down = True
-
+            if event.type == pygame.KEYDOWN:
+                self._check_keydown_events(event)
             elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_RIGHT:
-                    self.ship.moving_right = False
-                elif event.key == pygame.K_LEFT:
-                    self.ship.moving_left = False
-                elif event.key == pygame.K_UP:
-                    self.ship.moving_up = False
-                elif event.key == pygame.K_DOWN:
-                    self.ship.moving_down = False
+                self._check_keyup_events(event)
 
-    def _update_screen(self):
+
+    def _check_keydown_events(self, event):
+        """Реагирует на нажатие клавиш."""
+        if event.key == pygame.K_RIGHT:
+            self.ship.moving_right = True
+        elif event.key == pygame.K_LEFT:
+            self.ship.moving_left = True
+        elif event.key == pygame.K_UP:
+            self.ship.moving_up = True
+        elif event.key == pygame.K_DOWN:
+            self.ship.moving_down = True
+        elif event.key == pygame.K_q:
+            sys.exit()
+        elif event.key == pygame.K_SPACE:
+            self._fire_bullet()
+
+    def _check_keyup_events(self, event):
+        """Реагирует на отпускание клавиш."""
+        if event.key == pygame.K_RIGHT:
+            self.ship.moving_right = False
+        elif event.key == pygame.K_LEFT:
+            self.ship.moving_left = False
+        elif event.key == pygame.K_UP:
+            self.ship.moving_up = False
+        elif event.key == pygame.K_DOWN:
+            self.ship.moving_down = False
+
+    def _fire_bullet(self):
+        """Создание нового снаряда и включение его в группу bullets."""
+        new_bullet = Bullet(self)
+        self.bullets.add(new_bullet)
+
+    def _update_screen(self): #Перерисовывает экран при каждом проходе основного цикла.
         """Обновляет изображения на экране и отображает новый экран."""
         self.screen.fill(self.settings.bg_color)
         self.ship.blitme()
+        for bullet in self.bullets.sprites():
+            bullet.draw_bullet()
 
         pygame.display.flip()
 
