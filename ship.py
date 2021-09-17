@@ -11,6 +11,8 @@ class Ship():
 
         self.image = pygame.image.load(r'C:\Users\maind\PycharmProjects\Pictures\Space_ship.bmp')
         self.image = pygame.transform.scale(self.image, (self.image.get_width() // 30, self.image.get_height() // 30))
+        self.sky = pygame.image.load (r'C:\Users\maind\PycharmProjects\Pictures\sky.jpg')
+        self.sky = pygame.transform.scale(self.sky,(700,650))
         self.image.set_colorkey((255, 255, 255)) #Скрывает белый фон на котором находится корабль.
         self.rect = self.image.get_rect()
         self.rect.midbottom = self.screen_rect.midbottom  # Каждый новый корабль появляется у нижнего края экрана.
@@ -37,6 +39,7 @@ class Ship():
 
     def blitme(self):# Для вывода изображения корабля на экран
         """Рисует корабль в текущей позиции."""
+        self.screen.blit(self.sky,(0,0))
         self.screen.blit(self.image, self.rect)  # Метод blit выводит изображеие на экран в позиции заданной self.rect
 
         # if self.rect.right > WIDTH:
