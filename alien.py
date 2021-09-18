@@ -11,7 +11,7 @@ class Alien(Sprite):
         self.screen_rect = ai_game.screen.get_rect()
     # Загрузка изображения пришельца и назначение атрибута rect.
         self.image = pygame.image.load(r'C:\Users\maind\PycharmProjects\Pictures\Alien_2.png')
-        self.image = pygame.transform.scale(self.image,(60,60))
+        self.image = pygame.transform.scale(self.image,(50,50))
         self.image.set_colorkey((255, 255, 255))
         self.rect = self.image.get_rect()
         self.rect.top = self.screen_rect.top
