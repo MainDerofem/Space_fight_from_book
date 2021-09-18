@@ -34,6 +34,7 @@ class AlienInvasion():
             self.ship.update()
             self._update_screen()
             self._update_bullets()
+            self._update_aliens()
 
         clock.tick(FPS)
 
@@ -120,6 +121,10 @@ class AlienInvasion():
         alien.rect.x = alien.x
         alien.rect.y = alien.rect.height + 2 * alien.rect.height * row_number
         self.aliens.add(alien)
+
+    def _update_aliens(self):
+        """Обновляет позиции всех пришельцев во флоте."""
+        self.aliens.update()
 
     def _update_screen(self): #Перерисовывает экран при каждом проходе основного цикла.
         """Обновляет изображения на экране и отображает новый экран."""

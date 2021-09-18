@@ -8,6 +8,7 @@ class Alien(Sprite):
         """Инициализирует пришельца и задает его начальную позицию."""
         super().__init__()
         self.screen = ai_game.screen
+        self.settings = ai_game.settings
         self.screen_rect = ai_game.screen.get_rect()
     # Загрузка изображения пришельца и назначение атрибута rect.
         self.image = pygame.image.load(r'C:\Users\maind\PycharmProjects\Pictures\Alien_2.png')
@@ -19,9 +20,13 @@ class Alien(Sprite):
     # Каждый новый пришелец появляется в левом верхнем углу экрана.
         self.rect.x = self.rect.width
         self.rect.y = self.rect.height
-
 # Сохранение точной горизонтальной позиции пришельца.
         self.x = float(self.rect.x)
+
+    def update(self):
+        """Перемещает пришельца вправо."""
+        self.x += self.settings.alien_speed
+        self.rect.x = self.x
 
     def blite_2(self):
         self.screen.blit(self.image,self.rect)
